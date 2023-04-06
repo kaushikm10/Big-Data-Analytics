@@ -2,30 +2,132 @@
 <head>
     <title>HOME</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <style>
+        .grid {
+            margin-top: 3%;
+            border: 1px solid red;
+            display: grid;
+            grid-template-columns: 50% 50%;
+            grid-auto-rows: 50vh 50vh;
+}
 
+.item {
+  border: 1px solid black;
+}
+    </style>
 </head>
 <body>
+    <center>
     <form method="POST">
         <input type="text" name="stock" placeholder="Enter Stock Symbol">
         <input type="submit" value="Submit">
-    </form>
-
-    <canvas id="lineChart" width="900", height="400" hidden></canvas>
-
+    </form></center>
+    <div class="grid">
+        <div class="item">
+            <canvas id="lineChart1" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+        </div>
+        <div class="item">
+            <canvas id="lineChart2" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+        </div>
+        <div class="item">
+            <canvas id="lineChart3" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+        </div>
+        <div class="item">
+            <canvas id="lineChart4" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+        </div>
+    </div>
     <script>
-        var ctx = document.getElementById('lineChart').getContext("2d");
+        var ctx = document.getElementById('lineChart1').getContext("2d");
         var hidden = {{ hidden }}
         if (hidden == 1) {
             document.getElementById('lineChart').hidden = false;
         }
-        var lineChart = new Chart(ctx, {
+        var lineChart1 = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: {{ date | safe }},
                 datasets: [
                     {
-                        label: "Stock",
+                        label: "{{ symbol | safe }} - CLOSE",
                         data: {{ close | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
+
+    <script>
+        var ctx = document.getElementById('lineChart2').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart2 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "{{ symbol | safe }} - OPEN",
+                        data: {{ open | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
+
+    <script>
+        var ctx = document.getElementById('lineChart3').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart3 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "{{ symbol | safe }} - HIGH",
+                        data: {{ high | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
+
+    <script>
+        var ctx = document.getElementById('lineChart4').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart4 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "{{ symbol | safe }} - LOW",
+                        data: {{ low | safe }},
                         fill: false,
                         borderColor: "rgb(75, 192, 192)",
                         lineTension: 0.1

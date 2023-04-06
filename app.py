@@ -17,7 +17,11 @@ client = RESTClient(api_key=api_key)
 def home():
     date = []
     close = []
+    high = []
+    low = []
+    open = []
     hidden = 1
+    symbol = "STOCK"
     if request.method == "POST":
         symbol = request.form['stock']
         bars = client.get_aggs(ticker=symbol, multiplier=1, timespan="day", from_="1970-01-01", to="2023-04-05") 
@@ -25,9 +29,12 @@ def home():
             temp = datetime.fromtimestamp(int(str(bar.timestamp)[:10]))
             date.append(f"{temp.year}-{temp.month}-{temp.day}")
             close.append(bar.close)
+            high.append(bar.high)
+            low.append(bar.low)
+            open.append(bar.open)
+
         hidden = 0
-        print(date, close)
-    return render_template('home.html', close=close, date=date, hidden=hidden)
+    return render_template('home.html', close=close, open=open, low=low, high=high, date=date, hidden=hidden, symbol=symbol)
 
 
 if __name__ == '__main__':
