@@ -10,16 +10,24 @@ from datetime import datetime
 
 app = Flask(__name__)
 
+api_key = "Xljq9nB1MP3h8PhC5ZIPjp9QyjI1t11N"
+client = RESTClient(api_key=api_key)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    closing = pickle.load(open("closing.pkl", "rb"))
-    date = pickle.load(open("date.pkl", "rb")) 
-    for i, d in enumerate(date): 
-        temp = d.astype(object)
-        temp = datetime.fromtimestamp(int(str(temp)[:10]))
-        date[i] = f"{temp.year}-{temp.month}-{temp.day}"
-    return render_template('home.html', closing=closing, date=date)
+    date = []
+    close = []
+    hidden = 1
+    if request.method == "POST":
+        symbol = request.form['stock']
+        bars = client.get_aggs(ticker=symbol, multiplier=1, timespan="day", from_="1970-01-01", to="2023-04-05") 
+        for i, bar in enumerate(bars): 
+            temp = datetime.fromtimestamp(int(str(bar.timestamp)[:10]))
+            date.append(f"{temp.year}-{temp.month}-{temp.day}")
+            close.append(bar.close)
+        hidden = 0
+        print(date, close)
+    return render_template('home.html', close=close, date=date, hidden=hidden)
 
 
 if __name__ == '__main__':
