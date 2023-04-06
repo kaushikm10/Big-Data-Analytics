@@ -34,7 +34,6 @@ def view():
         conn.commit()
         cur.close()
 
-
         bars = client.get_aggs(ticker=symbol, multiplier=1, timespan="day", from_="1970-01-01", to="2023-04-04")
         cur = conn.cursor()
         data = []
@@ -51,6 +50,7 @@ def view():
         cur.close()
         conn.close()
         return jsonify(data)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
