@@ -1,19 +1,34 @@
 <!DOCTYPE html>
 <head>
     <title>HOME</title>
-	<script src="https://code.highcharts.com/highcharts.js"></script>
-	<script src="https://code.highcharts.com/modules/exporting.js"></script>
-	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 
 </head>
 <body>
-    <form method="POST" action="/view">
-        <input type="text" name="symbol">
-        <input type="submit" name="submit" value="Submit">
-    </form>
-	<div id="container"></div>
-	<script src="{{ url_for('static', filename='app.js') }}"></script>
 
+    <canvas id="lineChart" width="900", height="400"></canvas>
+
+    <script>
+        var ctx = document.getElementById('lineChart').getContext("2d");
+        var lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "Stock",
+                        data: {{ closing | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
 
 </body>
 
