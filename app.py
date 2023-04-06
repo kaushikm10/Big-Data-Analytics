@@ -6,6 +6,8 @@ from polygon import RESTClient
 import datetime
 import pickle
 from datetime import datetime
+import pandas as pd
+
 
 
 app = Flask(__name__)
@@ -21,6 +23,8 @@ def home():
     low = []
     open = []
     hidden = 1
+    data = []
+    ema = []
     symbol = "STOCK"
     if request.method == "POST":
         symbol = request.form['stock']
@@ -32,9 +36,11 @@ def home():
             high.append(bar.high)
             low.append(bar.low)
             open.append(bar.open)
+            data.append([bar.timestamp, bar.open, bar.high, bar.low, bar.close])
+        ema = list(pd.Series(close).ewm(span=10, adjust=False).mean().values)
 
         hidden = 0
-    return render_template('home.html', close=close, open=open, low=low, high=high, date=date, hidden=hidden, symbol=symbol)
+    return render_template('home.html', ema=ema, close=close, open=open, low=low, high=high, date=date, data=data, hidden=hidden, symbol=symbol)
 
 
 if __name__ == '__main__':

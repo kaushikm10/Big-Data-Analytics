@@ -2,6 +2,10 @@
 <head>
     <title>HOME</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/accessibility.js"></script>
     <style>
         .grid {
             margin-top: 3%;
@@ -22,6 +26,8 @@
         <input type="text" name="stock" placeholder="Enter Stock Symbol">
         <input type="submit" value="Submit">
     </form></center>
+    <div id="container"></div>
+
     <div class="grid">
         <div class="item">
             <canvas id="lineChart1" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
@@ -36,6 +42,26 @@
             <canvas id="lineChart4" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
         </div>
     </div>
+
+    <script>
+        var chartData = {{ data | safe }};
+Highcharts.stockChart('container', {
+  rangeSelector: {
+    selected: 1
+  },
+
+  title: {
+    text: '{{ symbol }} Price'
+  },
+
+  series: [{
+    type: 'candlestick',
+    name: "{{ symbol | safe }}",
+    data: chartData
+  }]
+});
+    </script>
+
     <script>
         var ctx = document.getElementById('lineChart1').getContext("2d");
         var hidden = {{ hidden }}
@@ -52,6 +78,13 @@
                         data: {{ close | safe }},
                         fill: false,
                         borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    },
+                    {
+                        label: "Exponential Moving Average",
+                        data: {{ ema | safe }},
+                        fill: false,
+                        borderColor: "rgb(192, 75, 192)",
                         lineTension: 0.1
                     }
                 ]

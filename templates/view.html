@@ -1,15 +1,40 @@
 <!DOCTYPE html>
 <head>
     <title>HOME</title>
-	<script src="https://code.highcharts.com/highcharts.js"></script>
-	<script src="https://code.highcharts.com/modules/exporting.js"></script>
-	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+	<script src="https://code.highcharts.com/stock/highstock.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/accessibility.js"></script>
+	
+
 
 </head>
 <body>
+
 	<div id="container"></div>
-	<script src="{{ url_for('static', filename='app.js') }}"></script>
 
+	<script>
+		var chartData = [
+  [1617052800000, 120.39, 123.18, 118.86, 121.76],
+  [1617139200000, 122.82, 124.57, 122.34, 123.00],
+  [1617225600000, 122.61, 123.18, 121.39, 122.06],
+];
+Highcharts.stockChart('container', {
+  rangeSelector: {
+    selected: 1
+  },
 
+  title: {
+    text: 'Stock Price'
+  },
+
+  series: [{
+    type: 'candlestick',
+    name: 'AAPL',
+    data: chartData
+  }]
+});
+
+	</script>
 </body>
 
