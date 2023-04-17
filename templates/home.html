@@ -23,7 +23,11 @@
 <body>
     <center>
     <form method="POST">
-        <input type="text" name="stock" placeholder="Enter Stock Symbol">
+        <select name="stock" id="stock">
+            {% for ticker in tickers %}
+                <option value="{{ticker}}">{{ticker}}</option>
+            {% endfor %}
+          </select>
         <input type="submit" value="Submit">
     </form></center>
     <div id="container"></div>
@@ -41,6 +45,10 @@
         <div class="item">
             <canvas id="lineChart4" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
         </div>
+    </div>
+
+    <div>
+        <h2>PREDICTION FOR NEXT DAY: {{prediction}}</h2>
     </div>
 
     <script>
