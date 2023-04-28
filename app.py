@@ -2,11 +2,7 @@ from flask import Flask, jsonify, render_template, url_for, request
 import os
 import psycopg2
 import requests
-<<<<<<< HEAD
 from  polygon import RESTClient
-=======
-from polygon import RESTClient
->>>>>>> ce41fe6b458f347ae39af91abccfc0367f9d1dbf
 import pickle
 from datetime import datetime, timedelta
 import pandas as pd
