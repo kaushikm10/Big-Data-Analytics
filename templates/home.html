@@ -2,22 +2,173 @@
 <head>
     <title>HOME</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/accessibility.js"></script>
+    <style>
+        .grid {
+            margin-top: 3%;
+            border: 1px solid red;
+            display: grid;
+            grid-template-columns: 50% 50%;
+            grid-auto-rows: 50vh 50vh;
+}
 
+.item {
+  border: 1px solid black;
+}
+    </style>
 </head>
 <body>
+    <center>
+    <form method="POST">
+        <select name="stock" id="stock">
+            {% for ticker in tickers %}
+                <option value="{{ticker}}">{{ticker}}</option>
+            {% endfor %}
+          </select>
+        <input type="submit" value="Submit">
+    </form></center>
+    <div id="container"></div>
 
-    <canvas id="lineChart" width="900", height="400"></canvas>
+    <div class="grid">
+        <div class="item">
+            <canvas id="lineChart1" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+        </div>
+        <div class="item">
+            <canvas id="lineChart2" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+        </div>
+        <div class="item">
+            <canvas id="lineChart3" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+        </div>
+        <div class="item">
+            <canvas id="lineChart4" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+        </div>
+    </div>
+
+    <div>
+        <h2>PREDICTION FOR NEXT DAY: {{prediction}}</h2>
+    </div>
 
     <script>
-        var ctx = document.getElementById('lineChart').getContext("2d");
-        var lineChart = new Chart(ctx, {
+        var chartData = {{ data | safe }};
+Highcharts.stockChart('container', {
+  rangeSelector: {
+    selected: 1
+  },
+
+  title: {
+    text: '{{ symbol }} Price'
+  },
+
+  series: [{
+    type: 'candlestick',
+    name: "{{ symbol | safe }}",
+    data: chartData
+  }]
+});
+    </script>
+
+    <script>
+        var ctx = document.getElementById('lineChart1').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart1 = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: {{ date | safe }},
                 datasets: [
                     {
-                        label: "Stock",
-                        data: {{ closing | safe }},
+                        label: "{{ symbol | safe }} - CLOSE",
+                        data: {{ close | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    },
+                    {
+                        label: "Exponential Moving Average",
+                        data: {{ ema | safe }},
+                        fill: false,
+                        borderColor: "rgb(192, 75, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
+
+    <script>
+        var ctx = document.getElementById('lineChart2').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart2 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "{{ symbol | safe }} - OPEN",
+                        data: {{ open | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
+
+    <script>
+        var ctx = document.getElementById('lineChart3').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart3 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "{{ symbol | safe }} - HIGH",
+                        data: {{ high | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
+
+    <script>
+        var ctx = document.getElementById('lineChart4').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart4 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "{{ symbol | safe }} - LOW",
+                        data: {{ low | safe }},
                         fill: false,
                         borderColor: "rgb(75, 192, 192)",
                         lineTension: 0.1
