@@ -62,17 +62,17 @@ def home():
             low.append(bar.low)
             open.append(bar.open)
             data.append([bar.timestamp, bar.open, bar.high, bar.low, bar.close])
-        last_date = datetime.strptime(end, '%Y-%m-%d')
+        last_date = datetime.strftime((datetime.today() + timedelta(days=1)), "%Y-%m-%d")
         query = "SELECT price FROM stock_data WHERE date_predicted = '{}' AND stock_symbol = '{}';".format(last_date, symbol)
         cursor.execute(query)
         results = cursor.fetchall()
-
+        print(results)
         prediction = results[0][0]
 
         ema = list(pd.Series(close).ewm(span=10, adjust=False).mean().values)
 
         hidden = 0
-    return render_template('home.html', ema=ema, close=close, open=open, low=low, high=high, date=date, data=data, hidden=hidden, symbol=symbol, tickers=tickers, prediction=prediction)
+    return render_template('try.html', ema=ema, close=close, open=open, low=low, high=high, date=date, data=data, hidden=hidden, symbol=symbol, tickers=tickers, prediction=prediction)
 
 
 @app.route('/register/', methods=['GET', 'POST'])
@@ -127,7 +127,7 @@ def index():
             return render_template('login.html')
         else:
             return render_template('register.html')
-    return render_template("index.html")
+    return render_template("register.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dylut2000</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/stock/modules/accessibility.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}">
+
+    <style>
+        .popup {
+            position: relative;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+          }
+          
+          /* The actual popup */
+          .popup .popuptext {
+            visibility: hidden;
+            width: 500px;
+            background-color: #eae6e6;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -80px;
+          }
+          
+          /* Popup arrow */
+          .popup .popuptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+          }
+          
+          /* Toggle this class - hide and show the popup */
+          .popup .show {
+            visibility: visible;
+            -webkit-animation: fadeIn 1s;
+            animation: fadeIn 1s;
+          }
+    </style>
+  </head>
+  
+
+
+
+  
+  <body>
+    <input type="checkbox" id="sidebar-toggle" />
+    <!--side bar-->
+    <div class="sidebar">
+      <!--sidebar-header-->
+      <div class="sidebar-header">
+        <h3 class="brand">
+          <span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-grid-1x2-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M0 1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1zm9 0a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V1zm0 9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5z"
+              />
+            </svg>
+          </span>
+          <span>Analyzing Stock Trends</span>
+        </h3>
+        <label for="sidebar-toggle" style="cursor: pointer">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-list"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
+            />
+          </svg>
+        </label>
+      </div>
+
+      <!--sidebar-menu-->
+      <div class="sidebar-menu">
+        <ul>
+          <li>
+            <a href="#">
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-house"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"
+                  />
+                </svg>
+              </span>
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-emoji-smile"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                  />
+                  <path
+                    d="M4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z"
+                  />
+                </svg>
+              </span>
+              <span>Sign Out</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!--main-content-->
+    <div class="main-content">
+      <!--header-->
+      <header>
+        <div class="search-wrapper">
+            <span>
+                <svg  width="16" height="16" fill="currentColor"  viewBox="0 0 16 16">
+                    <center>
+                       
+                  </svg>
+            </span>
+            <form method="POST">
+                <select name="stock" id="stock" style="width: 50px;">
+                    {% for ticker in tickers %}
+                        <option value="{{ticker}}">{{ticker}}</option>
+                    {% endfor %}
+                  </select>
+                <input type="submit" value="Submit">
+            </form></center>
+            
+        </div>
+
+      
+      </header>
+
+      <!--main-->
+      <main>
+        
+        <section class="recent">
+            <div class="activity-grid">
+                <div class="activity-card">
+                    <h3>Stock activity</h3>
+                    <div id="nishee"></div>
+                    
+                </div>
+
+                <div class="summary">
+                    <div class="summery-card">
+            
+                        
+
+                        <div class="summery-single">
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-dollar" viewBox="0 0 16 16">
+                                    <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
+                                    <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
+                                    <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z"/>
+                                  </svg>
+                            </span>
+
+                            <div>
+                                <h5>{{prediction}}</h5>
+                                <small>Prediction For Next Day </small>
+                            </div>
+                        </div>
+
+                        
+
+                    
+                </div>
+            </div>
+        </section>
+        <h2 class="dash-title">Overview</h2>
+
+        <!--cards-->
+        <div class="dash-cards">
+            <div class="card-single">
+                <div class="card-body">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+                          </svg>
+                    </span>
+                    <div>
+                        <h5>Exponential Moving Average</h5>
+                        
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="popup" onclick="myFunction()">View Graph
+                        <span class="popuptext" id="myPopup">
+                        <div class="item">
+                            <canvas id="lineChart1" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+                        </div>
+                    </span>
+                      </div>
+                    
+                </div>
+            </div>
+
+            <div class="card-single">
+                <div class="card-body">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+                          </svg>
+                    </span>
+                    <div>
+                        <h5>Bollinger Bands</h5>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="popup" onclick="myFunction1()">View Graph
+                        <span class="popuptext" id="myPopup1">
+                        <div class="item">
+                            <canvas id="lineChart2" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+                        </div>
+                    </span>
+                </div>
+            </div>
+            </div>
+            
+            <div class="card-single">
+              <div class="card-body">
+                  <span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+                        </svg>
+                  </span>
+                  <div>
+                      <h5>Stochastic Oscillator</h5>
+                  </div>
+              </div>
+              <div class="card-footer">
+                <div class="popup" onclick="myFunction2()">View Graph
+                    <span class="popuptext" id="myPopup2">
+                    <div class="item">
+                        <canvas id="lineChart3" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+                    </div>
+                </span>
+              </div>
+          </div>
+          </div>
+
+            <div class="card-single">
+                <div class="card-body">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up" viewBox="0 0 16 16">
+                            <path d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+                          </svg>
+                    </span>
+                    <div>
+                        <h5>Relative Strength Index</h5>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="popup" onclick="myFunction3()">View Graph
+                        <span class="popuptext" id="myPopup3">
+                        <div class="item">
+                            <canvas id="lineChart4" style="width:80%; height: 80%; margin-top: 5%; margin-left: 10%;" hidden></canvas>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        
+      </main>
+    </div>
+    <script>
+        var chartData = {{ data | safe }};
+    Highcharts.stockChart('nishee', {
+    rangeSelector: {
+    selected: 1
+    },
+    
+    title: {
+    text: '{{ symbol }} Price'
+    },
+    
+    series: [{
+    type: 'candlestick',
+    name: "{{ symbol | safe }}",
+    data: chartData
+    }]
+    });
+    </script>
+    <script>
+        var ctx = document.getElementById('lineChart1').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart1 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "{{ symbol | safe }} - CLOSE",
+                        data: {{ close | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    },
+                    {
+                        label: "Exponential Moving Average",
+                        data: {{ ema | safe }},
+                        fill: false,
+                        borderColor: "rgb(192, 75, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
+    <script>
+        var ctx = document.getElementById('lineChart2').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart2 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "{{ symbol | safe }} - OPEN",
+                        data: {{ open | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
+    <script>
+        var ctx = document.getElementById('lineChart3').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart3 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "{{ symbol | safe }} - HIGH",
+                        data: {{ high | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
+    
+    <script>
+        var ctx = document.getElementById('lineChart4').getContext("2d");
+        var hidden = {{ hidden }}
+        if (hidden == 1) {
+            document.getElementById('lineChart').hidden = false;
+        }
+        var lineChart4 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ date | safe }},
+                datasets: [
+                    {
+                        label: "{{ symbol | safe }} - LOW",
+                        data: {{ low | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script> 
+    <script>
+        // When the user clicks on div, open the popup
+        function myFunction() {
+          var popup = document.getElementById("myPopup");
+          popup.classList.toggle("show");
+        }
+        </script>
+        <script>
+            // When the user clicks on div, open the popup
+            function myFunction1() {
+              var popup = document.getElementById("myPopup1");
+              popup.classList.toggle("show");
+            }
+            </script>
+            <script>
+                // When the user clicks on div, open the popup
+                function myFunction2() {
+                  var popup = document.getElementById("myPopup2");
+                  popup.classList.toggle("show");
+                }
+                </script>
+                <script>
+                    // When the user clicks on div, open the popup
+                    function myFunction3() {
+                      var popup = document.getElementById("myPopup3");
+                      popup.classList.toggle("show");
+                    }
+                    </script>
+  </body>
+</html>
