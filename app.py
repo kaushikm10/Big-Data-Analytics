@@ -126,6 +126,7 @@ def index():
         if req_type == 'login':
             return render_template('login.html')
         else:
+            print("Heloo")
             return render_template('register.html')
     return render_template("register.html")
 
