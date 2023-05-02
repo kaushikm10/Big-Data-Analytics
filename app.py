@@ -7,7 +7,6 @@ import pickle
 from datetime import datetime, timedelta
 import pandas as pd
 import pickle
-from tensorflow.keras.models import load_model
 import numpy as np
 import sklearn
 from sklearn.preprocessing import MinMaxScaler
@@ -18,9 +17,21 @@ api_key = "Xljq9nB1MP3h8PhC5ZIPjp9QyjI1t11N"
 client = RESTClient(api_key=api_key)
 
 tickers = pickle.load(open("model/tickers.pkl", "rb"))
-tickers_map = {ticker: i for i, ticker in enumerate(tickers)}
-model = load_model("model/prediction_model.h5")
-scalers = pickle.load(open("model/scalers.pkl", "rb"))
+
+
+try:
+    conn = psycopg2.connect(
+        user="postgres",
+        password="postgres",
+        host="127.0.0.1",
+        port="5432",
+        database="stock_data"
+    )
+    cursor = conn.cursor()
+
+    print("Connected")
+except:
+    print("Not Connected")
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -47,10 +58,12 @@ def home():
             low.append(bar.low)
             open.append(bar.open)
             data.append([bar.timestamp, bar.open, bar.high, bar.low, bar.close])
-        pred_data = np.expand_dims(np.array(close[-60:]), 0)
-        scaler = scalers[symbol]
-        prediction = scaler.inverse_transform(model.predict(pred_data)[tickers_map[symbol]])[0][0]
-        print(prediction)
+        last_date = datetime.strptime(end, '%Y-%m-%d')
+        query = f"SELECT price FROM stock_data WHERE date_predicted = '{last_date}' AND stock_symbol = '{symbol}';"
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        prediction = results[0][0]
 
         ema = list(pd.Series(close).ewm(span=10, adjust=False).mean().values)
 
