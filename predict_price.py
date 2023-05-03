@@ -18,7 +18,7 @@ scalers = pickle.load(open("model/scalers.pkl", "rb"))
 try:
     conn = psycopg2.connect(
         user="postgres",
-        password="postgres",
+        password="nishee16",
         host="127.0.0.1",
         port="5432",
         database="stock_data"
@@ -39,6 +39,7 @@ for ticker in tickers:
     try:
         last_date = pd.to_datetime(historical_data.index.values[-1]).strftime('%Y-%m-%d')
         last_date = datetime.datetime.strptime(last_date, '%Y-%m-%d')
+        
     except:
         query = "INSERT INTO stock_data (date_predicted, stock_symbol, price) VALUES (%s, %s, %s)"
         values = (tomorrow, ticker, float(0))

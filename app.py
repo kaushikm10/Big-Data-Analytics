@@ -1,14 +1,15 @@
-from flask import Flask, jsonify, render_template, url_for, request, session, redirect
 import os
-import psycopg2
-import requests
-from  polygon import RESTClient
 import pickle
 from datetime import datetime, timedelta
-import pandas as pd
-import pickle
+
 import numpy as np
+import pandas as pd
+import psycopg2
+import requests
 import sklearn
+from flask import (Flask, jsonify, redirect, render_template, request, session,
+                   url_for)
+from polygon import RESTClient
 from sklearn.preprocessing import MinMaxScaler
 
 app = Flask(__name__)
@@ -22,7 +23,7 @@ tickers = pickle.load(open("model/tickers.pkl", "rb"))
 try:
     conn = psycopg2.connect(
         user="postgres",
-        password="postgres",
+        password="nishee16",
         host="127.0.0.1",
         port="5432",
         database="stock_data"
@@ -126,9 +127,15 @@ def index():
         if req_type == 'login':
             return render_template('login.html')
         else:
-            print("Heloo")
+            
             return render_template('register.html')
     return render_template("register.html")
+
+@app.route("/logout/",methods=['GET', 'POST'])
+def logout():
+    session['logged_in']=False
+    return render_template('register.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
