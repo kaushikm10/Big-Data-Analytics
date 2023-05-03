@@ -1,7 +1,7 @@
 import os
 import pickle
 from datetime import datetime, timedelta
-
+import ta
 import numpy as np
 import pandas as pd
 import psycopg2
@@ -41,12 +41,19 @@ def home():
         return redirect(url_for('index'))
     date = []
     close = []
+    hidden = 1
+    data = []
     high = []
     low = []
     open = []
-    hidden = 1
-    data = []
     ema = []
+    rsi = []
+    bb = []
+    upper_bb = []
+    lower_bb = []
+    so = []
+    k = []
+    d = []
     symbol = "STOCK"
     prediction = None
     if request.method == "POST":
@@ -71,9 +78,27 @@ def home():
         prediction = results[0][0]
 
         ema = list(pd.Series(close).ewm(span=10, adjust=False).mean().values)
-
+        rsi = ta.momentum.RSIIndicator(pd.Series(close)).rsi()
+        rsi.dropna(inplace=True)
+        bb = ta.volatility.BollingerBands(pd.Series(close)).bollinger_mavg()
+        bb.dropna(inplace=True)
+        upper_bb = ta.volatility.BollingerBands(pd.Series(close)).bollinger_hband()
+        upper_bb.dropna(inplace=True)
+        lower_bb = ta.volatility.BollingerBands(pd.Series(close)).bollinger_lband()
+        lower_bb.dropna(inplace=True)
+        so = ta.momentum.StochasticOscillator(pd.Series(high), pd.Series(low), pd.Series(close))
+        k = pd.Series(so.stoch())
+        k.dropna(inplace=True)
+        d = pd.Series(k).rolling(window=3).mean()
+        d.dropna(inplace=True)
         hidden = 0
-    return render_template('try.html', ema=ema, close=close, open=open, low=low, high=high, date=date, data=data, hidden=hidden, symbol=symbol, tickers=tickers, prediction=prediction)
+        rsi = list(rsi.values)
+        bb = list(bb.values)
+        upper_bb = list(upper_bb.values)
+        lower_bb = list(lower_bb.values)
+        k = list(k.values)
+        d = list(d.values)
+    return render_template('try.html', ema=ema, close=close, date=date, data=data, hidden=hidden, symbol=symbol, tickers=tickers, prediction=prediction, rsi=rsi, bb=bb, upper_bb=upper_bb, lower_bb=lower_bb, k=k, d=d)
 
 
 @app.route('/register/', methods=['GET', 'POST'])

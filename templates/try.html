@@ -275,7 +275,7 @@ select>option{
                 </div>
             </div>
         </section>
-        <h2 class="dash-title">Overview</h2>
+        <h2 class="dash-title">Technical Indicators</h2>
 
         <!--cards-->
         <div class="dash-cards">
@@ -448,12 +448,34 @@ select>option{
                 labels: {{ date | safe }},
                 datasets: [
                     {
-                        label: "{{ symbol | safe }} - OPEN",
-                        data: {{ open | safe }},
+                        label: "{{ symbol | safe }} - CLOSE",
+                        data: {{ close | safe }},
                         fill: false,
                         borderColor: "rgb(75, 192, 192)",
                         lineTension: 0.1
+                    },
+                    {
+                        label: "{{ symbol | safe }} - BB",
+                        data: {{ bb | safe }},
+                        fill: false,
+                        borderColor: 'orange',
+                        lineTension: 0.1
+                    },
+                    {
+                        label: "{{ symbol | safe }} - UpperBB",
+                        data: {{ upper_bb | safe }},
+                        fill: false,
+                        borderColor: 'green',
+                        lineTension: 0.1
+                    },
+                    {
+                        label: "{{ symbol | safe }} - LowerBB",
+                        data: {{ lower_bb | safe }},
+                        fill: false,
+                        borderColor: 'blue',
+                        lineTension: 0.1
                     }
+
                 ]
             },
             options: {
@@ -473,10 +495,17 @@ select>option{
                 labels: {{ date | safe }},
                 datasets: [
                     {
-                        label: "{{ symbol | safe }} - HIGH",
-                        data: {{ high | safe }},
+                        label: "{{ symbol | safe }} - %K",
+                        data: {{ k | safe }},
                         fill: false,
                         borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    },
+                    {
+                        label: "{{ symbol | safe }} - %D",
+                        data: {{ d | safe }},
+                        fill: false,
+                        borderColor: 'red',
                         lineTension: 0.1
                     }
                 ]
@@ -489,26 +518,44 @@ select>option{
     
     <script>
         var ctx = document.getElementById('lineChart4').getContext("2d");
-        var hidden = {{ hidden }}
+        var hidden = {{ hidden }};
         if (hidden == 1) {
             document.getElementById('lineChart').hidden = false;
         }
+        var rsi = {{ rsi | safe }};
+        console.log("AAAA");
+        var upperthres = new Array(rsi.length).fill(70);
+        var lowerthres = new Array(rsi.length).fill(30);
         var lineChart4 = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: {{ date | safe }},
                 datasets: [
                     {
-                        label: "{{ symbol | safe }} - LOW",
-                        data: {{ low | safe }},
+                        label: "{{ symbol | safe }} - RSI",
+                        data: rsi,
                         fill: false,
                         borderColor: "rgb(75, 192, 192)",
                         lineTension: 0.1
+                    },
+                    {
+                        label: "Upper Threshold",
+                        data: upperthres,
+                        borderColor: 'red',
+                        fill: false,
+                        borderDash: [5, 5]
+                    },
+                    {
+                        label: "Lower Threshold",
+                        data: lowerthres,
+                        borderColor: 'green',
+                        fill: false,
+                        borderDash: [5, 5]
                     }
                 ]
             },
             options: {
-                responsive: false
+                responsive: true
             }
         });
     </script> 
