@@ -23,7 +23,7 @@ tickers = pickle.load(open("model/tickers.pkl", "rb"))
 try:
     conn = psycopg2.connect(
         user="postgres",
-        password="nishee16",
+        password="postgres",
         host="127.0.0.1",
         port="5432",
         database="stock_data"

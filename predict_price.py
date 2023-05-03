@@ -9,6 +9,7 @@ import pandas as pd
 import datetime
 
 
+date_ = datetime.datetime.strftime((datetime.datetime.today() + datetime.timedelta(days=1)), "%Y-%m-%d")
 
 tickers = pickle.load(open("model/tickers.pkl", "rb"))
 tickers_map = {ticker: i for i, ticker in enumerate(tickers)}
@@ -18,7 +19,7 @@ scalers = pickle.load(open("model/scalers.pkl", "rb"))
 try:
     conn = psycopg2.connect(
         user="postgres",
-        password="nishee16",
+        password="postgres",
         host="127.0.0.1",
         port="5432",
         database="stock_data"
@@ -37,12 +38,12 @@ for ticker in tickers:
 
     historical_data = obj.history(period='5mo')[['Close']][-60:]
     try:
-        last_date = pd.to_datetime(historical_data.index.values[-1]).strftime('%Y-%m-%d')
-        last_date = datetime.datetime.strptime(last_date, '%Y-%m-%d')
+        last_date = date_ 
+
         
     except:
         query = "INSERT INTO stock_data (date_predicted, stock_symbol, price) VALUES (%s, %s, %s)"
-        values = (tomorrow, ticker, float(0))
+        values = (date_, ticker, float(0))
         cursor.execute(query, values)
         conn.commit()
         continue
@@ -53,12 +54,7 @@ for ticker in tickers:
     pred_data = np.expand_dims(close, 0)
     scaler = scalers[ticker]
     prediction = scaler.inverse_transform(model.predict(pred_data)[tickers_map[ticker]])[0][0]
-    tomorrow =  last_date + datetime.timedelta(days=1)
-    if tomorrow.weekday() in [5, 6]:
-        tomorrow =  datetime.datetime.today().date() + datetime.timedelta(days=2)
-        if tomorrow.weekday() in [5, 6]:
-            tomorrow =  datetime.datetime.today().date() + datetime.timedelta(days=3)
     query = "INSERT INTO stock_data (date_predicted, stock_symbol, price) VALUES (%s, %s, %s)"
-    values = (tomorrow, ticker, float(prediction))
+    values = (date_, ticker, float(prediction))
     cursor.execute(query, values)
     conn.commit()
