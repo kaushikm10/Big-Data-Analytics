@@ -20,18 +20,18 @@ client = RESTClient(api_key=api_key)
 tickers = pickle.load(open("model/tickers.pkl", "rb"))
 
 
-try:
-    conn = psycopg2.connect(
-        user="postgres",
-        password="postgres",
-        host="127.0.0.1",
-        port="5432",
-        database="stock_data"
-    )
-    cursor = conn.cursor()
 
+conn = psycopg2.connect(
+    user="postgres",
+    password="postgres",
+    host="127.0.0.1",
+    port="5432",
+    database="stock_data"
+)
+cursor = conn.cursor()
+if conn:
     print("Connected")
-except:
+else:
     print("Not Connected")
 
 @app.route('/stock/', methods=['GET', 'POST'])
@@ -76,6 +76,11 @@ def home():
         results = cursor.fetchall()
         print(results)
         prediction = results[0][0]
+        ema_pred = None
+        rsi_pred = None
+        bb_pred = None
+        so_pred = None
+
 
         ema = list(pd.Series(close).ewm(span=10, adjust=False).mean().values)
         rsi = ta.momentum.RSIIndicator(pd.Series(close)).rsi()
@@ -98,7 +103,36 @@ def home():
         lower_bb = list(lower_bb.values)
         k = list(k.values)
         d = list(d.values)
-    return render_template('try.html', ema=ema, close=close, date=date, data=data, hidden=hidden, symbol=symbol, tickers=tickers, prediction=prediction, rsi=rsi, bb=bb, upper_bb=upper_bb, lower_bb=lower_bb, k=k, d=d)
+
+
+        if close[-1] > ema[-1]:
+            ema_pred = "BUY"
+        else:
+            ema_pred = "SELL"
+
+        if rsi[-1] < 30:
+            rsi_pred = "BUY"
+        elif rsi[-1] > 70:
+            rsi_pred = "SELL"
+        else:
+            rsi_pred = "HOLD"
+        
+        
+        if close[-1] < lower_bb[-1]:
+            bb_pred = "BUY"
+        elif close[-1] > upper_bb[-1]:
+            bb_pred = "SELL"
+        else:
+            bb_pred = "HOLD"
+
+        if so[-1] < 20:
+            so_pred = "BUY"
+        elif so[-1] > 80:
+            so_pred = "SELL"
+        else:
+            so_pred = "HOLD"
+
+    return render_template('try.html', ema=ema, close=close, date=date, data=data, hidden=hidden, symbol=symbol, tickers=tickers, prediction=prediction, rsi=rsi, bb=bb, upper_bb=upper_bb, lower_bb=lower_bb, k=k, d=d, ema_pred=ema_pred, so_pred=so_pred, rsi_pred=rsi_pred, bb_pred=bb_pred)
 
 
 @app.route('/register/', methods=['GET', 'POST'])
