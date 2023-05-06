@@ -55,6 +55,11 @@ def home():
     k = []
     d = []
     symbol = "STOCK"
+    ema_pred = None
+    rsi_pred = None
+    bb_pred = None
+    so_pred = None
+
     prediction = None
     if request.method == "POST":
         symbol = request.form['stock']
@@ -76,11 +81,7 @@ def home():
         results = cursor.fetchall()
         print(results)
         prediction = results[0][0]
-        ema_pred = None
-        rsi_pred = None
-        bb_pred = None
-        so_pred = None
-
+        
 
         ema = list(pd.Series(close).ewm(span=10, adjust=False).mean().values)
         rsi = ta.momentum.RSIIndicator(pd.Series(close)).rsi()
@@ -125,9 +126,9 @@ def home():
         else:
             bb_pred = "HOLD"
 
-        if so[-1] < 20:
+        if k[-1] < 20:
             so_pred = "BUY"
-        elif so[-1] > 80:
+        elif k[-1] > 80:
             so_pred = "SELL"
         else:
             so_pred = "HOLD"
