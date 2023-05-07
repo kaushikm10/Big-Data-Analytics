@@ -32,10 +32,10 @@ This project involves developing a stock price prediction and trading recommenda
 ---
 ## Future Work
 
---> Deploy docker images on GCP
---> Use more technical indicators and more stock data
---> Use financial news data for price prediction
---> Predict stock prices for next 3 days
+* Deploy docker images on GCP
+* Use more technical indicators and more stock data
+* Use financial news data for price prediction
+* Predict stock prices for next 3 days
 ---
 
 Authors and Contributors:
