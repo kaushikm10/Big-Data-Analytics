@@ -30,9 +30,16 @@ This project involves developing a stock price prediction and trading recommenda
 
 ![image](https://user-images.githubusercontent.com/61223907/236661215-482d9685-b7b5-4e63-a465-df9548ec1515.png)
 ---
+## Future Work
+
+--> Deploy docker images on GCP
+--> Use more technical indicators and more stock data
+--> Use financial news data for price prediction
+--> Predict stock prices for next 3 days
+---
 
 Authors and Contributors:
 
-Heet Vora
-Nishee Shelat
+Heet Vora <br>
+Nishee Shelat <br>
 Kaushik Metha
